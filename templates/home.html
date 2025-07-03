@@ -1,0 +1,94 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="snap-y snap-mandatory h-screen overflow-y-scroll scroll-smooth">
+
+  <!-- 🔹 FEATURED SECTION -->
+  <!-- 🔹 FEATURED SECTION -->
+<section id="featured" class="snap-start h-screen p-10 bg-gray-900 text-white">
+  <h1 class="text-4xl font-bold mb-4">Featured</h1>
+  <p class="text-lg text-gray-300">Explore our key highlights, latest innovations, and strategic focus areas that define our brand's excellence and future vision.</p>
+</section>
+
+ 
+  </section>
+
+  <!-- 🔹 STATISTICS SECTION -->
+  <section id="statistics" class="snap-start h-screen p-10 bg-gray-800 text-white">
+    <h1 class="text-3xl font-bold mb-4">Statistics</h1>
+    <p>Statistics content here...</p>
+  </section>
+
+  <!-- 🔹 SERVICES SECTION -->
+  <section id="services" class="snap-start h-screen p-10 bg-gray-700 text-white">
+    <h1 class="text-3xl font-bold mb-4">Services</h1>
+
+    <!-- Tabs -->
+    <div class="flex space-x-6 border-b border-gray-600 mb-6">
+      <button onclick="showServiceTab('s-ai', this)" class="s-tab-btn pb-2 font-bold border-b-2 border-blue-500">AI & ML</button>
+      <button onclick="showServiceTab('s-app', this)" class="s-tab-btn pb-2">Application Services</button>
+      <button onclick="showServiceTab('s-cloud', this)" class="s-tab-btn pb-2">Cloud Services</button>
+      <button onclick="showServiceTab('s-data', this)" class="s-tab-btn pb-2">Data & Analytics</button>
+      <button onclick="showServiceTab('s-devsec', this)" class="s-tab-btn pb-2">DevSecOps</button>
+    </div>
+
+    <!-- Tab Panels -->
+    <div id="s-ai" class="tab">AI content here...</div>
+    <div id="s-app" class="tab hidden">Application Services content here...</div>
+    <div id="s-cloud" class="tab hidden">Cloud Services content here...</div>
+    <div id="s-data" class="tab hidden">Data & Analytics content here...</div>
+    <div id="s-devsec" class="tab hidden">DevSecOps content here...</div>
+  </section>
+
+  <!-- 🔹 CLIENTS -->
+  <section id="clients" class="snap-start h-screen p-10 bg-gray-800 text-white">
+    <h1 class="text-3xl font-bold mb-4">Our Clients</h1>
+    <p>Client content here...</p>
+  </section>
+
+  <!-- 🔹 LEADERSHIP -->
+  <section id="leadership" class="snap-start h-screen p-10 bg-gray-700 text-white">
+    <h1 class="text-3xl font-bold mb-4">Thought Leadership</h1>
+    <p>Leadership content here...</p>
+  </section>
+
+  <!-- 🔹 INSIGHTS -->
+  <section id="insights" class="snap-start h-screen p-10 bg-gray-800 text-white">
+    <h1 class="text-3xl font-bold mb-4">Insights</h1>
+    <p>Insights content here...</p>
+  </section>
+
+  <!-- 🔹 CONTACT -->
+  <section id="contact" class="snap-start h-screen p-10 bg-gray-700 text-white">
+    <h1 class="text-3xl font-bold mb-4">Contact Us</h1>
+    <p>Contact content here...</p>
+  </section>
+</div>
+
+<!-- ✅ JavaScript -->
+<script>
+  function showFeaturedTab(id, btn) {
+    const tabs = ['f-ai', 'f-app', 'f-cloud', 'f-data', 'f-devsec'];
+    tabs.forEach(tab => document.getElementById(tab).classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+
+    document.querySelectorAll('.f-tab-btn').forEach(b => b.classList.remove('border-blue-500', 'font-bold'));
+    btn.classList.add('border-blue-500', 'font-bold');
+  }
+
+  function showServiceTab(id, btn) {
+    const tabs = ['s-ai', 's-app', 's-cloud', 's-data', 's-devsec'];
+    tabs.forEach(tab => document.getElementById(tab).classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+
+    document.querySelectorAll('.s-tab-btn').forEach(b => b.classList.remove('border-blue-500', 'font-bold'));
+    btn.classList.add('border-blue-500', 'font-bold');
+  }
+</script>
+
+<section id="featured" ...> ... </section>        <!-- WHAT WE DO -->
+<section id="leadership" ...> ... </section>      <!-- WHO WE ARE -->
+<section id="insights" ...> ... </section>        <!-- RESOURCES -->
+
+{% endblock %}

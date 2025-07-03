@@ -1,0 +1,36 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}WellSync Technology Services{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-gray-900 text-white font-sans">
+
+  {% include 'navbar.html' %}
+
+  <div class="flex">
+    {% include 'sidebar.html' %}
+    
+    <main class="flex-1 p-6">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  {% include 'chatbot.html' %}
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script>
+  function toggleQuickAccess() {
+    const links = document.getElementById('quick-access-links');
+    links.classList.toggle('hidden');
+  }
+</script>
+
+
+</body>
+</html>
