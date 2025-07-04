@@ -2,16 +2,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="snap-y snap-mandatory h-screen overflow-y-scroll scroll-smooth">
 
   <!-- 🔹 FEATURED SECTION -->
-  <!-- 🔹 FEATURED SECTION -->
-<section id="featured" class="snap-start h-screen p-10 bg-gray-900 text-white">
-  <h1 class="text-4xl font-bold mb-4">Featured</h1>
-  <p class="text-lg text-gray-300">Explore our key highlights, latest innovations, and strategic focus areas that define our brand's excellence and future vision.</p>
-</section>
+  <section id="featured" class="snap-start h-screen relative bg-gray-900 text-white flex flex-col justify-center items-start px-10">
+    <div class="max-w-5xl">
+      <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">
+        Empowering Your Business Through<br>
+        <span class="text-purple-500">Intelligent Technology Solutions</span>
+      </h1>
 
- 
+      <a href="{{ url_for('read_more') }}"
+        class="inline-block mt-8 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full text-lg transition">
+        Read More
+      </a>
+    </div>
   </section>
 
   <!-- 🔹 STATISTICS SECTION -->
@@ -64,31 +68,24 @@
     <h1 class="text-3xl font-bold mb-4">Contact Us</h1>
     <p>Contact content here...</p>
   </section>
-</div>
 
-<!-- ✅ JavaScript -->
-<script>
-  function showFeaturedTab(id, btn) {
-    const tabs = ['f-ai', 'f-app', 'f-cloud', 'f-data', 'f-devsec'];
-    tabs.forEach(tab => document.getElementById(tab).classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
+  <!-- ✅ JavaScript -->
+  <script>
+    function showServiceTab(id, btn) {
+      const tabs = ['s-ai', 's-app', 's-cloud', 's-data', 's-devsec'];
+      tabs.forEach(tab => document.getElementById(tab).classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
 
-    document.querySelectorAll('.f-tab-btn').forEach(b => b.classList.remove('border-blue-500', 'font-bold'));
-    btn.classList.add('border-blue-500', 'font-bold');
-  }
+      document.querySelectorAll('.s-tab-btn').forEach(b => b.classList.remove('border-blue-500', 'font-bold'));
+      btn.classList.add('border-blue-500', 'font-bold');
+    }
 
-  function showServiceTab(id, btn) {
-    const tabs = ['s-ai', 's-app', 's-cloud', 's-data', 's-devsec'];
-    tabs.forEach(tab => document.getElementById(tab).classList.add('hidden'));
-    document.getElementById(id).classList.remove('hidden');
-
-    document.querySelectorAll('.s-tab-btn').forEach(b => b.classList.remove('border-blue-500', 'font-bold'));
-    btn.classList.add('border-blue-500', 'font-bold');
-  }
-</script>
-
-<section id="featured" ...> ... </section>        <!-- WHAT WE DO -->
-<section id="leadership" ...> ... </section>      <!-- WHO WE ARE -->
-<section id="insights" ...> ... </section>        <!-- RESOURCES -->
+    window.addEventListener('load', () => {
+      const featured = document.getElementById('featured');
+      if (featured) {
+        featured.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  </script>
 
 {% endblock %}

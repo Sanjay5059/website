@@ -1,7 +1,7 @@
 <!-- templates/sidebar.html -->
 <aside class="w-1/6 min-h-screen p-4 bg-gray-900 border-r border-gray-700 space-y-6 text-sm">
 
-  <!-- 🔹 Scroll Sections (renamed from Quick Access to Navigation for clarity) -->
+  <!-- 🔹 Scroll Sections -->
   <ul class="space-y-2">
     <li>
       <a href="#featured" class="sidebar-link block py-2 text-gray-400 hover:text-white relative group">
@@ -47,23 +47,33 @@
     </li>
   </ul>
 
-  <!-- 🔹 Toggleable Section: Quick Access -->
-  <div class="border-l-4 border-blue-600 pl-2 font-bold text-white mt-6 cursor-pointer" onclick="toggleQuickAccess()">
-    Quick Access
-  </div>
-  <div id="quick-access-links" class="space-y-2 hidden mt-2 transition-all duration-500 ease-in-out">
-    <div class="text-gray-400 hover:text-white cursor-pointer" onclick="setActiveSidebar('leave')">Leave</div>
-    <div class="text-gray-400 hover:text-white cursor-pointer" onclick="setActiveSidebar('timesheet')">Timesheet</div>
-    <div class="text-gray-400 hover:text-white cursor-pointer" onclick="setActiveSidebar('compoff')">Comp-Off</div>
-    <div class="text-gray-400 hover:text-white cursor-pointer" onclick="setActiveSidebar('feedback')">Feedback</div>
-    <div class="text-gray-400 hover:text-white cursor-pointer" onclick="setActiveSidebar('onboarding')">HR Onboarding</div>
-    <div class="text-gray-400 hover:text-white cursor-pointer" onclick="setActiveSidebar('induction')">Induction</div>
-    <div class="text-gray-400 hover:text-white cursor-pointer" onclick="setActiveSidebar('tickets')">Tickets</div>
-    <div class="text-gray-400 hover:text-white cursor-pointer" onclick="setActiveSidebar('ithelp')">IT Help Desk</div>
-    <div class="text-gray-400 hover:text-white cursor-pointer" onclick="setActiveSidebar('knowledge')">Knowledge Hub</div>
-    <div class="text-gray-400 hover:text-white cursor-pointer" onclick="setActiveSidebar('jobs')">Jobs</div>
-    <div class="text-gray-400 hover:text-white cursor-pointer" onclick="setActiveSidebar('portal')">Portal</div>
-    <div class="text-gray-400 hover:text-white cursor-pointer" onclick="setActiveSidebar('reports')">Reports</div>
-  </div>
+  <!-- 🔐 Auth-Based Quick Access Section -->
+  {% if session.get('user_role') == 'employee' %}
+    <!-- If logged in as employee -->
+    <div class="mt-10">
+      <div class="border-l-4 border-blue-600 pl-2 font-bold text-white mb-2">Quick Access</div>
+      <div class="space-y-2">
+        <a href="/employee/leave" class="text-gray-400 hover:text-white block">Leave</a>
+        <a href="/employee/timesheet" class="text-gray-400 hover:text-white block">Timesheet</a>
+        <a href="/employee/compoff" class="text-gray-400 hover:text-white block">Comp-Off</a>
+        <a href="/feedback" class="text-gray-400 hover:text-white block">Feedback</a>
+        <a href="/hr/onboarding" class="text-gray-400 hover:text-white block">HR Onboarding</a>
+        <a href="/hr/induction" class="text-gray-400 hover:text-white block">Induction</a>
+        <a href="/tickets" class="text-gray-400 hover:text-white block">Tickets</a>
+        <a href="/it-helpdesk" class="text-gray-400 hover:text-white block">IT Help Desk</a>
+        <a href="/knowledge" class="text-gray-400 hover:text-white block">Knowledge Hub</a>
+        <a href="/jobs" class="text-gray-400 hover:text-white block">Jobs</a>
+        <a href="/employee-portal" class="text-gray-400 hover:text-white block">Portal</a>
+        <a href="/reports" class="text-gray-400 hover:text-white block">Reports</a>
+      </div>
+    </div>
+  {% else %}
+    <!-- If not logged in, show a link to the login screen -->
+    <div class="mt-10">
+      <a href="{{ url_for('signin') }}" class="block border-l-4 border-blue-600 pl-2 font-bold text-white hover:text-blue-300">
+        Quick Access
+      </a>
+    </div>
+  {% endif %}
 
 </aside>

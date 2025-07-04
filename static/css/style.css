@@ -16,4 +16,8 @@
 .active span {
   width: 100% !important;
 }
+html {
+  scroll-behavior: smooth;
+}
+
 
