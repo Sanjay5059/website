@@ -157,3 +157,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   sections.forEach(section => observer.observe(section));
 });
+
+
+
+
+  function showServiceTab(id, btn) {
+    // Hide all content
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+
+    // Show the selected tab content
+    document.getElementById(id).classList.remove('hidden');
+
+    // Reset all tab buttons
+    document.querySelectorAll('.s-tab-btn').forEach(button => {
+      button.classList.remove('active-tab');
+    });
+
+    // Mark clicked tab as active
+    btn.classList.add('active-tab');
+  }
+
+  // Optional: Show first tab on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    const defaultTab = document.querySelector('.s-tab-btn');
+    showServiceTab('s-ai', defaultTab);
+  });
+
+

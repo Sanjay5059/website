@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="p-10 text-white bg-black">
+  <h1 class="text-4xl font-bold mb-6">Cloud Services</h1>
+  <p class="mb-10 text-lg text-gray-300">Migrate and manage your IT infrastructure with cloud-first strategies. We offer multi-cloud deployment, automation, monitoring, and cost optimization.</p>
+
+  <h2 class="text-2xl font-semibold mb-4">What We Deliver</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-gray-300 mb-12">
+    <div class="bg-gray-900 p-4 rounded">Cloud Migrations: Lift-and-shift or re-platforming</div>
+    <div class="bg-gray-900 p-4 rounded">Cost Optimization: Auto-scaling and reserved instances</div>
+    <div class="bg-gray-900 p-4 rounded">Serverless Solutions: Lambda, Functions, Pub/Sub</div>
+    <div class="bg-gray-900 p-4 rounded">Hybrid Cloud: Mix of on-prem and public cloud</div>
+  </div>
+
+  <h2 class="text-2xl font-semibold mb-4">Industries We Serve</h2>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-gray-400 mb-12">
+    <div>Finance</div><div>Retail</div><div>Healthcare</div><div>Manufacturing</div>
+    <div>Media</div><div>Government</div><div>Education</div><div>Technology</div>
+  </div>
+</section>
+
+<section id="faq-cloud" class="p-10 bg-black text-white">
+  <h2 class="text-3xl font-bold mb-6">Cloud Services - Frequently Asked Questions</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    {% set faqs = [
+      ["What cloud providers do you support?", "We support AWS, Microsoft Azure, Google Cloud Platform, and private clouds."],
+      ["Do you offer multi-cloud solutions?", "Yes, we architect and manage systems across multiple cloud vendors."],
+      ["Can you migrate my on-premise app to the cloud?", "Yes, we handle end-to-end migration and modernization."],
+      ["What’s your approach to cloud security?", "We follow cloud-native best practices for IAM, encryption, and compliance."],
+      ["How do you reduce cloud costs?", "We use autoscaling, reserved instances, and continuous monitoring to cut costs."],
+      ["Do you support serverless architecture?", "Yes. We implement AWS Lambda, Azure Functions, and more."],
+      ["How long does a typical cloud migration take?", "Between 2–12 weeks, depending on system size and complexity."],
+      ["Do you provide DevOps services for the cloud?", "Yes, CI/CD, container orchestration, and IaC pipelines are included."],
+      ["Can I keep some systems on-prem while using cloud?", "Yes, we support hybrid cloud configurations."],
+      ["What compliance standards do you follow?", "We ensure compliance with SOC 2, HIPAA, ISO 27001, and others."]
+    ] %}
+
+    {% for question, answer in faqs %}
+    <div class="faq-item border border-purple-700 rounded-lg overflow-hidden">
+      <button onclick="toggleFaq(this)" class="w-full text-left p-4 bg-purple-700 hover:bg-purple-800 font-semibold flex justify-between items-center">
+        {{ question }}
+        <span class="faq-icon text-xl transition-transform duration-200">+</span>
+      </button>
+      <div class="faq-answer hidden bg-gray-900 p-4 text-gray-300">
+        {{ answer }}
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</section>
+
+<script>
+  function toggleFaq(btn) {
+    const content = btn.nextElementSibling;
+    const icon = btn.querySelector(".faq-icon");
+    const isHidden = content.classList.contains("hidden");
+
+    // Close all open answers in the section
+    document.querySelectorAll(".faq-answer").forEach(div => div.classList.add("hidden"));
+    document.querySelectorAll(".faq-icon").forEach(i => i.textContent = "+");
+
+    // Toggle current one
+    if (isHidden) {
+      content.classList.remove("hidden");
+      icon.textContent = "−";
+    } else {
+      content.classList.add("hidden");
+      icon.textContent = "+";
+    }
+  }
+</script>
+
+{% endblock %}

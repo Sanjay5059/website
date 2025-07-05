@@ -124,6 +124,39 @@ def signin():
 def read_more():
     return render_template('readmore.html')
 
+@app.route('/services/ai-ml')
+def ai_ml():
+    return render_template('ai_ml.html')
+
+@app.route('/services/application-services')
+def application_services():
+    return render_template('application_services.html')
+
+@app.route('/services/cloud-services')
+def cloud_services():
+    return render_template('cloud_services.html')
+
+@app.route('/services/data-analytics')
+def data_analytics():
+    return render_template('data_analytics.html')
+
+@app.route('/services/devsecops')
+def devsecops():
+    return render_template('devsecops.html')
+
+@app.route('/contact-submit', methods=['POST'])
+def contact_submit():
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    email = request.form['email']
+    phone = request.form['phone']
+    message = request.form['message']
+    consent = 'consent' in request.form
+
+    # Store or send the message here
+    return redirect(url_for('home'))  # or show a success page
+
+
 
 
 

@@ -20,4 +20,14 @@ html {
   scroll-behavior: smooth;
 }
 
+.active-tab {
+    border-bottom: 2px solid #a855f7; 
+    font-weight: bold;
+}
+
+.s-tab-btn.active-tab {
+  border-bottom: 2px solid #a855f7; /* Tailwind purple-500 */
+  font-weight: 700;
+}
+
 

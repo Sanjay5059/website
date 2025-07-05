@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="p-10 text-white bg-black">
+  <h1 class="text-4xl font-bold mb-6">DevSecOps</h1>
+  <p class="text-lg text-gray-300 mb-6">Deliver secure code fast with integrated DevSecOps practices.</p>
+
+  <ul class="list-disc list-inside text-gray-400 mb-8">
+    <li>Secure CI/CD pipelines</li>
+    <li>Vulnerability scanning & remediation</li>
+    <li>IaC compliance tools (Terraform, CloudFormation)</li>
+    <li>Alerting and rollback automation</li>
+  </ul>
+</section>
+
+<section id="faq-devsec" class="p-10 bg-black text-white">
+  <h2 class="text-3xl font-bold mb-6">DevSecOps - Frequently Asked Questions</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    {% set faqs = [
+      ["What is DevSecOps?", "DevSecOps integrates security practices into every phase of the DevOps lifecycle."],
+      ["What tools do you use in CI/CD pipelines?", "GitLab, GitHub Actions, Jenkins, ArgoCD, CircleCI, and others."],
+      ["How is security integrated in pipelines?", "Via SAST, DAST, IaC checks, dependency scanning, and policy enforcement."],
+      ["What languages and environments do you support?", "Java, Python, Node.js, .NET, containers, and Kubernetes."],
+      ["Can you customize compliance checks?", "Yes, we adapt checks to meet SOC2, HIPAA, ISO 27001, and custom policies."],
+      ["Do you support Kubernetes security?", "Yes, using tools like Kube-Bench, Kyverno, and OPA for policy enforcement."],
+      ["How is rollback handled on failure?", "Automated rollback via version control and monitored triggers."],
+      ["How often are vulnerability scans performed?", "Usually every commit or nightly, depending on project needs."],
+      ["Do you provide IaC validation?", "Yes, we use Terraform Validate, tfsec, Checkov, and CloudFormation Lint."],
+      ["Can you work with our existing DevOps team?", "Absolutely. We embed alongside your teams and improve your security posture."]
+    ] %}
+
+    {% for question, answer in faqs %}
+    <div class="faq-item border border-purple-700 rounded-lg overflow-hidden">
+      <button onclick="toggleFaq(this)" class="w-full text-left p-4 bg-purple-700 hover:bg-purple-800 font-semibold flex justify-between items-center">
+        {{ question }}
+        <span class="faq-icon text-xl transition-transform duration-200">+</span>
+      </button>
+      <div class="faq-answer hidden bg-gray-900 p-4 text-gray-300">
+        {{ answer }}
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</section>
+
+<script>
+  function toggleFaq(btn) {
+    const content = btn.nextElementSibling;
+    const icon = btn.querySelector(".faq-icon");
+    const isHidden = content.classList.contains("hidden");
+
+    document.querySelectorAll(".faq-answer").forEach(div => div.classList.add("hidden"));
+    document.querySelectorAll(".faq-icon").forEach(i => i.textContent = "+");
+
+    if (isHidden) {
+      content.classList.remove("hidden");
+      icon.textContent = "−";
+    } else {
+      content.classList.add("hidden");
+      icon.textContent = "+";
+    }
+  }
+</script>
+
+{% endblock %}

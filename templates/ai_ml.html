@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="p-10 text-white bg-black">
+  <h1 class="text-4xl font-bold mb-6">AI & ML</h1>
+  <p class="mb-10 text-lg text-gray-300">
+    Empower your business with intelligent AI-driven solutions. From predictive analytics to NLP, our AI & ML services improve forecasting, automate tasks, and drive innovation.
+  </p>
+
+  <h2 class="text-2xl font-semibold mb-4">What We Offer</h2>
+  <ul class="list-disc list-inside text-gray-400 mb-8">
+    <li>Custom NLP models for automation and chatbots</li>
+    <li>Predictive modeling and forecasting</li>
+    <li>Computer vision and image recognition</li>
+    <li>Recommendation engines for personalization</li>
+  </ul>
+
+  <h2 class="text-2xl font-semibold mb-4">Industries Served</h2>
+  <p class="text-gray-400 mb-8">Retail, Finance, Healthcare, Manufacturing, Logistics</p>
+</section>
+
+<!-- FAQs Section -->
+<section id="faq-ai" class="p-10 bg-black text-white">
+  <h2 class="text-3xl font-bold mb-6">AI & ML - Frequently Asked Questions</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    {% set faqs = [
+      ["How do you train custom ML models?", "We use labeled datasets and training pipelines built on frameworks like TensorFlow or PyTorch."],
+      ["What tools and frameworks do you use?", "We use TensorFlow, PyTorch, scikit-learn, and cloud tools like AWS SageMaker and Google Vertex AI."],
+      ["Can we integrate AI into existing apps?", "Yes, using REST APIs or embedding lightweight models depending on your infrastructure."],
+      ["Do you offer NLP solutions for support bots?", "Yes. We build NLP models for chatbots, email parsing, and sentiment analysis."],
+      ["What data do I need to get started with AI?", "Structured historical data, preferably labeled, helps with predictive modeling."],
+      ["Is my data secure during training?", "Yes, we comply with industry standards and offer on-premise options for added privacy."],
+      ["How long does AI model training take?", "Depending on complexity and data size, training can range from a few hours to days."],
+      ["Do you support computer vision use cases?", "Absolutely. We handle object detection, image classification, and OCR."],
+      ["What’s the difference between ML and deep learning?", "Deep learning is a subset of ML using neural networks for more complex tasks."],
+      ["Do you provide model monitoring & retraining?", "Yes, we set up pipelines for model drift detection and automated retraining."]
+    ] %}
+
+    {% for question, answer in faqs %}
+    <div class="faq-item border border-purple-700 rounded-lg overflow-hidden">
+      <button onclick="toggleFaq(this)" class="w-full text-left p-4 bg-purple-700 hover:bg-purple-800 font-semibold flex justify-between items-center">
+        {{ question }}
+        <span class="faq-icon text-xl transition-transform duration-200">+</span>
+      </button>
+      <div class="faq-answer hidden bg-gray-900 p-4 text-gray-300">
+        {{ answer }}
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</section>
+
+<!-- Toggle FAQ Script -->
+<script>
+  function toggleFaq(btn) {
+    const content = btn.nextElementSibling;
+    const icon = btn.querySelector(".faq-icon");
+    const isHidden = content.classList.contains("hidden");
+
+    // Collapse all other answers
+    document.querySelectorAll(".faq-answer").forEach(div => div.classList.add("hidden"));
+    document.querySelectorAll(".faq-icon").forEach(icon => icon.textContent = "+");
+
+    // Toggle this one
+    if (isHidden) {
+      content.classList.remove("hidden");
+      icon.textContent = "−";
+    } else {
+      content.classList.add("hidden");
+      icon.textContent = "+";
+    }
+  }
+</script>
+
+{% endblock %}

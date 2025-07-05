@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="p-10 text-white bg-black">
+  <h1 class="text-4xl font-bold mb-6">Application Services</h1>
+  <p class="mb-10 text-lg text-gray-300">Scalable, secure applications tailored to your business needs.</p>
+
+  <h2 class="text-2xl font-semibold mb-4">The Impact of Our Work</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-gray-300 mb-12">
+    <div class="bg-gray-900 p-4 rounded">Platform Management: Ensure high availability and performance</div>
+    <div class="bg-gray-900 p-4 rounded">App Modernization: Improve legacy systems</div>
+    <div class="bg-gray-900 p-4 rounded">Service Management: Reduce downtime</div>
+    <div class="bg-gray-900 p-4 rounded">AIOps & Automation: Boost efficiency with AI</div>
+  </div>
+
+  <h2 class="text-2xl font-semibold mb-4">Your Partner in Digital Transformation</h2>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-gray-400 mb-12">
+    <div>Healthcare</div><div>Retail & E-commerce</div><div>Banking</div><div>Manufacturing</div>
+    <div>Telecom</div><div>Energy</div><div>Public Sector</div><div>Education</div>
+  </div>
+</section>
+
+<section id="faq-app" class="p-10 bg-black text-white">
+  <h2 class="text-3xl font-bold mb-6">Application Services - Frequently Asked Questions</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    {% set faqs = [
+      ["What is Application Management?", "It involves maintaining, optimizing, and modernizing applications for peak performance and security."],
+      ["How does application modernization improve business operations?", "It improves speed, scalability, reliability, and lowers maintenance costs."],
+      ["What industries can benefit from Application Management services?", "Industries like finance, healthcare, logistics, and retail benefit significantly."],
+      ["Do you offer customized application strategies?", "Yes, we tailor our approach based on your business needs and architecture."],
+      ["How does cloud integration fit into application management?", "Cloud-native solutions improve availability, scalability, and maintenance."],
+      ["What security measures are implemented in application management?", "We embed encryption, access controls, code reviews, and compliance checks."],
+      ["How long does it take to modernize an application?", "Typical timelines range from a few weeks to several months depending on complexity."],
+      ["Do you support applications post-modernization?", "Yes, we offer ongoing support, monitoring, and performance tuning."],
+      ["Can legacy applications be integrated with modern technologies?", "Absolutely. We use adapters, APIs, and refactoring strategies for integration."],
+      ["How do you ensure compliance during application modernization?", "We follow GDPR, HIPAA, ISO guidelines during development and migration."]
+    ] %}
+
+    {% for question, answer in faqs %}
+    <div class="faq-item border border-purple-700 rounded-lg overflow-hidden">
+      <button onclick="toggleFaq(this)" class="w-full text-left p-4 bg-purple-700 hover:bg-purple-800 font-semibold flex justify-between items-center">
+        {{ question }}
+        <span class="faq-icon text-xl transition-transform duration-200">+</span>
+      </button>
+      <div class="faq-answer hidden bg-gray-900 p-4 text-gray-300">
+        {{ answer }}
+      </div>
+    </div>
+    {% endfor %}
+    
+  </div>
+</section>
+
+<script>
+  function toggleFaq(btn) {
+    const content = btn.nextElementSibling;
+    const icon = btn.querySelector(".faq-icon");
+    const isHidden = content.classList.contains("hidden");
+
+    // Close all open answers in the section
+    document.querySelectorAll(".faq-answer").forEach(div => div.classList.add("hidden"));
+    document.querySelectorAll(".faq-icon").forEach(i => i.textContent = "+");
+
+    // Toggle current one
+    if (isHidden) {
+      content.classList.remove("hidden");
+      icon.textContent = "−";
+    } else {
+      content.classList.add("hidden");
+      icon.textContent = "+";
+    }
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="p-10 text-white bg-black">
+  <h1 class="text-4xl font-bold mb-6">Data & Analytics</h1>
+  <p class="text-lg text-gray-300 mb-6">Make smarter business decisions with real-time data and insights.</p>
+
+  <ul class="list-disc list-inside text-gray-400 mb-8">
+    <li>BI dashboards (Power BI, Tableau)</li>
+    <li>ETL and data lake creation</li>
+    <li>ML-powered data predictions</li>
+    <li>Interactive reporting automation</li>
+  </ul>
+</section>
+
+<section id="faq-data" class="p-10 bg-black text-white">
+  <h2 class="text-3xl font-bold mb-6">Data & Analytics - Frequently Asked Questions</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    {% set faqs = [
+      ["What data tools do you use?", "Power BI, Tableau, Looker, SQL, Python, Apache Spark, and more."],
+      ["Can you build real-time dashboards?", "Yes, using technologies like Kafka, Spark Streaming, and WebSockets."],
+      ["Do you handle both structured and unstructured data?", "Yes, we support data lakes, databases, APIs, and files."],
+      ["Can I track KPIs for my business in one place?", "We create unified dashboards integrating all key metrics."],
+      ["How secure is my business data?", "We implement encryption, RBAC, and follow compliance frameworks."],
+      ["Do you integrate ML with analytics?", "Yes. We combine predictive models with visual reporting."],
+      ["What industries use your analytics services?", "Retail, healthcare, finance, and logistics primarily."],
+      ["How long does it take to build a dashboard?", "Anywhere from 1 week to 1 month depending on complexity."],
+      ["Do you provide data cleansing and ETL?", "Yes. We build robust pipelines to prepare and enrich your data."],
+      ["Can I access the dashboards on mobile?", "Yes, all dashboards are responsive and mobile-friendly."]
+    ] %}
+
+    {% for question, answer in faqs %}
+    <div class="faq-item border border-purple-700 rounded-lg overflow-hidden">
+      <button onclick="toggleFaq(this)" class="w-full text-left p-4 bg-purple-700 hover:bg-purple-800 font-semibold flex justify-between items-center">
+        {{ question }}
+        <span class="faq-icon text-xl transition-transform duration-200">+</span>
+      </button>
+      <div class="faq-answer hidden bg-gray-900 p-4 text-gray-300">
+        {{ answer }}
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</section>
+
+<script>
+  function toggleFaq(btn) {
+    const content = btn.nextElementSibling;
+    const icon = btn.querySelector(".faq-icon");
+    const isHidden = content.classList.contains("hidden");
+
+    document.querySelectorAll(".faq-answer").forEach(div => div.classList.add("hidden"));
+    document.querySelectorAll(".faq-icon").forEach(i => i.textContent = "+");
+
+    if (isHidden) {
+      content.classList.remove("hidden");
+      icon.textContent = "−";
+    } else {
+      content.classList.add("hidden");
+      icon.textContent = "+";
+    }
+  }
+</script>
+
+{% endblock %}
