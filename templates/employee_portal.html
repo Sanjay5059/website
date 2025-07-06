@@ -1,15 +1,54 @@
-<!-- templates/employee_portal.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Employee Portal</title>
+    <title>Employee Portal - NexIQon</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
-    <div class="bg-gray-800 p-8 rounded-lg shadow-md max-w-md w-full">
-        <h1 class="text-2xl font-bold mb-4">Welcome to NexIQon Employee Portal 👥</h1>
-        <p class="mb-4">You are now logged in as an employee.</p>
-        <a href="/logout" class="text-blue-400 hover:underline">Logout</a>
+<body class="bg-gray-900 text-white min-h-screen">
+
+    <!-- Top Bar -->
+    <div class="flex justify-between items-center bg-gray-800 px-6 py-4">
+        <h1 class="text-xl font-bold text-blue-400">NexIQon Employee Portal</h1>
+        <a href="/logout" onclick="return confirmLogout()" class="text-red-400 hover:text-red-300">Logout</a>
     </div>
+
+    <!-- Welcome Text -->
+    <div class="text-center my-8">
+        <h2 class="text-3xl font-bold text-blue-300">Welcome to NexIQon Employee Portal 👥</h2>
+        <p class="mt-2 text-gray-300">You are now logged in as an employee.</p>
+    </div>
+
+    <!-- Quick Access Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto px-4">
+        
+        <a href="{{ url_for('employee_announcements') }}" class="bg-gray-800 hover:bg-gray-700 transition p-6 rounded-lg shadow text-white text-lg flex items-center space-x-2">
+            <span>📢</span>
+            <span>View Announcements</span>
+        </a>
+
+        <a href="#" class="bg-gray-800 hover:bg-gray-700 transition p-6 rounded-lg shadow text-white text-lg flex items-center space-x-2">
+            <span>📝</span>
+            <span>Submit Feedback</span>
+        </a>
+
+        <a href="#" class="bg-gray-800 hover:bg-gray-700 transition p-6 rounded-lg shadow text-white text-lg flex items-center space-x-2">
+            <span>🕒</span>
+            <span>Timesheet</span>
+        </a>
+
+        <a href="#" class="bg-gray-800 hover:bg-gray-700 transition p-6 rounded-lg shadow text-white text-lg flex items-center space-x-2">
+            <span>🏖️</span>
+            <span>Leave Requests</span>
+        </a>
+        
+    </div>
+
+    <!-- Logout confirmation script -->
+    <script>
+        function confirmLogout() {
+            return confirm("Are you sure you want to logout?");
+        }
+    </script>
+
 </body>
 </html>

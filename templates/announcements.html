@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HR Announcements</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-10">
+    <h1 class="text-3xl font-bold text-blue-400 mb-6">📢 HR Announcements</h1>
+
+    <!-- 🔼 Post new announcement -->
+    <form method="POST" class="bg-gray-800 p-4 rounded shadow mb-6">
+        <input type="text" name="title" placeholder="Announcement Title" required class="w-full p-2 mb-2 rounded bg-gray-700 text-white border border-gray-600">
+        <textarea name="content" placeholder="Content" required class="w-full p-2 mb-2 rounded bg-gray-700 text-white border border-gray-600"></textarea>
+        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Post</button>
+    </form>
+
+    <!-- 🔽 Display announcements -->
+    <div class="space-y-4">
+        {% for ann in announcements %}
+            <div class="bg-gray-800 p-4 rounded shadow">
+                <h2 class="text-xl font-semibold">{{ ann.title }}</h2>
+                <p class="text-sm text-gray-400">Posted on: {{ ann.date }}</p>
+                <p class="mt-2">{{ ann.content }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

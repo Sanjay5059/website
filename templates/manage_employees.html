@@ -1,0 +1,35 @@
+<!-- templates/manage_employees.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Employees</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-8">
+    <h1 class="text-2xl font-bold text-blue-400 mb-6 text-center">Employee Management</h1>
+
+    <table class="w-full bg-gray-800 rounded-lg overflow-hidden">
+        <thead>
+            <tr class="bg-gray-700 text-left text-sm text-gray-300 uppercase">
+                <th class="p-3">ID</th>
+                <th class="p-3">Email</th>
+                <th class="p-3">Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr class="border-t border-gray-700 hover:bg-gray-700">
+                <td class="p-3">{{ employee.id }}</td>
+                <td class="p-3">{{ employee.email }}</td>
+                <td class="p-3">{{ employee.role or 'N/A' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mt-6">
+        <a href="{{ url_for('hr_portal') }}" class="text-blue-400 underline">← Back to HR Portal</a>
+    </div>
+</body>
+</html>

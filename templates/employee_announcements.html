@@ -1,0 +1,23 @@
+<!-- templates/employee_announcements.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Company Announcements</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white p-10">
+    <h1 class="text-3xl font-bold text-blue-400 mb-6">📢 Company Announcements</h1>
+
+    <div class="space-y-4">
+        {% for ann in announcements %}
+            <div class="bg-gray-800 p-4 rounded shadow">
+                <h2 class="text-xl font-semibold">{{ ann.title }}</h2>
+                <p class="text-sm text-gray-400">{{ ann.date }}</p>
+                <p class="mt-2">{{ ann.content }}</p>
+            </div>
+        {% else %}
+            <p class="text-gray-400">No announcements available.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

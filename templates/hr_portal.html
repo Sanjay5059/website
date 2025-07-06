@@ -1,0 +1,40 @@
+<!-- templates/hr_portal.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NexIQon HR Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white h-screen p-10">
+
+    <!-- ✅ Navigation Bar -->
+    <nav class="bg-gray-800 p-4 mb-6 flex justify-between items-center rounded shadow">
+        <h1 class="text-lg font-bold text-blue-400">NexIQon HR Portal</h1>
+        <a href="#" onclick="confirmHRLogout()" class="text-red-400 hover:underline">Logout</a>
+
+    </nav>
+
+    <!-- ✅ Portal Heading -->
+    <h1 class="text-3xl font-bold mb-6 text-center text-blue-400">Welcome to NexIQon HR Portal</h1>
+
+    <!-- ✅ Action Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        <a href="{{ url_for('manage_employees') }}" class="bg-gray-800 p-4 rounded shadow hover:bg-gray-700 transition">👥 Manage Employees</a>
+        <a href="{{ url_for('leave_requests') }}" class="bg-gray-800 p-4 rounded shadow hover:bg-gray-700 transition">📝 Leave Requests</a>
+        <a href="{{ url_for('hr_announcements') }}" class="bg-gray-800 p-4 rounded shadow hover:bg-gray-700 transition">📢 Announcements</a>
+        <a href="{{ url_for('performance_feedback') }}" class="bg-gray-800 p-4 rounded shadow hover:bg-gray-700 transition">🎯 Performance & Feedback</a>
+        <a href="{{ url_for('onboarding_tracker') }}" class="bg-gray-800 p-4 rounded shadow hover:bg-gray-700 transition">🗓️ Onboarding Tracker</a>
+    </div>
+
+    <script>
+function confirmHRLogout() {
+    if (confirm("Are you sure you want to logout from the HR portal?")) {
+        window.location.href = "{{ url_for('hr_logout') }}";
+    }
+}
+</script>
+
+
+</body>
+</html>

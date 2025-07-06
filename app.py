@@ -97,51 +97,9 @@ def logout():
 def home():
     return render_template('home.html')
 
-@app.route('/employee/leave')
-def leave_form():
-    return render_template('employee/leave.html')
-
-@app.route('/employee/timesheet')
-def timesheet():
-    return render_template('employee/timesheet.html')
-
-@app.route('/employee/compoff')
-def compoff():
-    return render_template('employee/compoff.html')
-
-@app.route('/feedback')
-def feedback():
-    return render_template('feedback.html')
-
-@app.route('/hr/onboarding')
-def onboarding():
-    return render_template('hr/onboarding.html')
-
-@app.route('/hr/induction')
-def induction():
-    return render_template('hr/induction.html')
-
-@app.route('/tickets')
-def tickets():
-    return render_template('tickets/index.html')
-
-@app.route('/it-helpdesk')
-def it_helpdesk():
-    return render_template('it/helpdesk.html')
-
-@app.route('/knowledge')
-def knowledge():
-    return render_template('knowledge/index.html')
-
-@app.route('/jobs')
-def jobs():
-    return render_template('jobs/index.html')
 
 
 
-@app.route('/reports')
-def reports():
-    return render_template('reports/index.html')
 
 @app.route('/readmore')
 def read_more():
@@ -351,7 +309,7 @@ def hr_login():
                 if password == db_password and role == 'hr':
                     session['user'] = {'email': email, 'role': role}
                     flash('Login successful! Welcome HR.', 'success')
-                    return redirect(url_for('hr_dashboard'))  # HR dashboard route
+                    return redirect('/hr-portal')  # HR dashboard route
                 else:
                     flash('Access denied: Not authorized as HR.', 'error')
             else:
@@ -363,13 +321,14 @@ def hr_login():
     return render_template('hr_login.html')
 
 
-@app.route('/hr-dashboard')
-def hr_dashboard():
-    if 'user' in session and session['user']['role'] == 'hr':
-        return 'Welcome to the HR Dashboard!'
+@app.route('/hr-portal')
+def hr_portal():
+    if session.get('user') and session['user']['role'] == 'hr':
+        return render_template('hr_portal.html')
     else:
-        return redirect(url_for('hr_login'))
-    
+        flash("Unauthorized access", "error")
+        return redirect('/hr-login')
+
 
 @app.route('/employee-login', methods=['GET', 'POST'])
 def employee_login():
@@ -427,6 +386,166 @@ def employee_portal():
     else:
         flash('Unauthorized access', 'error')
         return redirect('/employee-login')
+
+@app.route('/manage-employees')
+def manage_employees():
+    try:
+        conn = psycopg2.connect(
+            dbname="NexIQon",
+            user="sanjay",
+            password="",
+            host="localhost",
+            port="5432"
+        )
+        cur = conn.cursor()
+        cur.execute("SELECT id, email, role FROM users WHERE role = 'employee'")
+        rows = cur.fetchall()
+        employees = [{'id': r[0], 'email': r[1], 'role': r[2]} for r in rows]
+        cur.close()
+        conn.close()
+    except Exception as e:
+        flash(f'Error fetching employee data: {e}', 'error')
+        employees = []
+
+    return render_template('manage_employees.html', employees=employees)
+
+
+@app.route('/request-leave', methods=['GET', 'POST'])
+def request_leave():
+    if request.method == 'POST':
+        email = session.get('user_email')  # store email in session during login
+        leave_date = request.form['leave_date']
+        leave_days = int(request.form['leave_days'])
+        leave_type = request.form['leave_type']
+        reason = request.form['reason']
+
+        conn = psycopg2.connect(...)  # your config
+        cur = conn.cursor()
+
+        # Check how many leaves taken this month
+        cur.execute("""
+            SELECT SUM(leave_days) FROM leave_requests 
+            WHERE employee_email = %s 
+              AND EXTRACT(MONTH FROM leave_date) = EXTRACT(MONTH FROM CURRENT_DATE)
+              AND status = 'Approved'
+        """, (email,))
+        total_taken = cur.fetchone()[0] or 0
+
+        if total_taken + leave_days > 5:
+            flash("You’ve exceeded the monthly leave quota (5 days).", "danger")
+        else:
+            cur.execute("""
+                INSERT INTO leave_requests 
+                (employee_email, leave_date, leave_days, leave_type, reason) 
+                VALUES (%s, %s, %s, %s, %s)
+            """, (email, leave_date, leave_days, leave_type, reason))
+            conn.commit()
+            flash("Leave request submitted!", "success")
+
+        cur.close()
+        conn.close()
+
+    return render_template("employee_leave_form.html")
+
+@app.route('/hr/leave-requests', methods=['GET', 'POST'])
+def hr_leave_requests():
+    conn = psycopg2.connect(...)
+    cur = conn.cursor()
+
+    if request.method == 'POST':
+        req_id = request.form['req_id']
+        action = request.form['action']
+        cur.execute("UPDATE leave_requests SET status = %s WHERE id = %s", (action, req_id))
+        conn.commit()
+
+    cur.execute("SELECT * FROM leave_requests ORDER BY submitted_at DESC")
+    requests = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return render_template("hr_leave_requests.html", requests=requests)
+
+
+
+@app.route('/hr-announcements', methods=['GET', 'POST'])
+def hr_announcements():
+    conn = psycopg2.connect(
+        dbname="NexIQon",
+        user="sanjay",
+        password="",  # Fill in your DB password
+        host="localhost",
+        port="5432"
+    )
+    cur = conn.cursor()
+
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        cur.execute("INSERT INTO announcements (title, content) VALUES (%s, %s)", 
+                    (title, content))
+        conn.commit()
+        flash("Announcement posted successfully!", "success")
+
+    cur.execute("""
+    SELECT title, content, posted_on 
+    FROM announcements 
+    WHERE posted_on >= NOW() - INTERVAL '30 days' 
+    ORDER BY posted_on DESC
+""")
+
+    announcements = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    announcements_data = [
+    {'title': a[0], 'content': a[1], 'date': a[2].strftime('%Y-%m-%d %H:%M')}
+    for a in announcements
+]
+
+
+    return render_template('announcements.html', announcements=announcements_data)
+
+@app.route('/employee-announcements')
+def employee_announcements():
+    conn = psycopg2.connect(
+        dbname="NexIQon",
+        user="sanjay",
+        password="",  # your DB password
+        host="localhost",
+        port="5432"
+    )
+    cur = conn.cursor()
+
+    # ✅ Only show announcements from last 30 days
+    cur.execute("""
+        SELECT title, content, posted_on 
+        FROM announcements 
+        WHERE posted_on >= NOW() - INTERVAL '30 days' 
+        ORDER BY posted_on DESC
+    """)
+    data = cur.fetchall()
+    conn.close()
+
+    announcements = [
+        {'title': d[0], 'content': d[1], 'date': d[2].strftime('%Y-%m-%d %H:%M')}
+        for d in data
+    ]
+    return render_template("employee_announcements.html", announcements=announcements)
+
+@app.route('/performance-feedback')
+def performance_feedback():
+    return render_template('performance_feedback.html')
+
+@app.route('/onboarding-tracker')
+def onboarding_tracker():
+    return render_template('onboarding_tracker.html')
+
+# HR-specific logout route
+@app.route('/hr-logout')
+def hr_logout():
+    session.clear()
+    flash('HR has been logged out successfully.', 'success')
+    return redirect('/hr-login')
 
 
 
