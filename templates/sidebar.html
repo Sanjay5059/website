@@ -69,11 +69,13 @@
     </div>
   {% else %}
     <!-- If not logged in, show a link to the login screen -->
-    <div class="mt-10">
-      <a href="{{ url_for('signin') }}" class="block border-l-4 border-blue-600 pl-2 font-bold text-white hover:text-blue-300">
-        Quick Access
-      </a>
-    </div>
+    <!-- 🔐 Auth-Based Quick Access Entry -->
+<div class="mt-10">
+  <a href="{{ url_for('access_page') }}" class="block border-l-4 border-blue-600 pl-2 font-bold text-white hover:text-blue-300">
+    Quick Access
+  </a>
+</div>
+
   {% endif %}
 
 </aside>

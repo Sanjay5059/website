@@ -2,10 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Access Page</title>
+  <title>Access Portal</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
-  <h1 class="text-4xl font-bold">Hello 👋 Welcome to the Portal!</h1>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+  <!-- 🔷 Top Navbar -->
+  <header class="bg-white shadow-md py-4 px-6 flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-blue-600">NexIQon</h1>
+    <div class="space-x-4">
+      <a href="#" onclick="confirmLogout()" class="text-sm text-red-500 hover:text-red-700">Logout</a>
+
+<script>
+  function confirmLogout() {
+    const confirmed = confirm("Are you sure you want to exit?");
+    if (confirmed) {
+      // Redirect to home or login page
+      window.location.href = "/";
+    } else {
+      // Stay on the same page
+      return;
+    }
+  }
+</script>
+
+    </div>
+  </header>
+
+  <!-- 🔸 Main Content -->
+  <main class="flex-1 p-10 flex flex-col items-center justify-center space-y-8">
+    <div class="max-w-4xl w-full">
+      <h2 class="text-3xl font-bold text-white mb-2">Welcome to NexIQon Portal 👋</h2>
+      <p class="text-gray-300 mb-8">
+        At NexIQon, we blend innovation with intelligence to deliver IT solutions that transform businesses.
+        Our employees are our strength — empowered, skilled, and passionate about building the future. Explore your tools below.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- HR Portal Box -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-2 text-white">🔐 HR Access Portal</h3>
+          <p class="text-gray-300 mb-4">Manage onboarding, induction, employee records, and HR reports.</p>
+          <a href="/hr/access" class="text-blue-400 hover:text-blue-200 underline">Go to HR Portal</a>
+        </div>
+
+        <!-- Employee Portal Box -->
+        <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-2 text-white">👥 Employee Access Portal</h3>
+          <p class="text-gray-300 mb-4">Submit timesheets, leave forms, and track your activities with ease.</p>
+          <a href="/employee/access" class="text-blue-400 hover:text-blue-200 underline">Go to Employee Portal</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+ 
+
 </body>
 </html>

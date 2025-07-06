@@ -5,11 +5,14 @@ from flask_cors import CORS
 from werkzeug.security import check_password_hash
 from authlib.integrations.flask_client import OAuth
 from urllib.parse import urlencode
+from itsdangerous import URLSafeTimedSerializer
 
 
 app = Flask(__name__)
 app.secret_key = '2169ae279691918b3b5c54641f2efb9e17de8ac4e4722e376ea6475085828918'
 CORS(app)
+
+s = URLSafeTimedSerializer(app.secret_key)
 
 # 🔐 OAuth Setup
 oauth = OAuth(app)
@@ -239,6 +242,90 @@ def login_required(f):  # This wraps your route function like leave_form()
             return redirect(url_for('signin'))  # 🚪 Redirect to login
         return f(*args, **kwargs)  # ✅ Else continue to the real route
     return decorated_function
+
+
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        user = get_user_by_email(email)
+
+        if user:
+            token = s.dumps(email, salt='password-reset-salt')
+            reset_link = url_for('reset_password', token=token, _external=True)
+
+            # Simulate sending email
+            print(f"[Simulated Email] Reset link for {email}: {reset_link}")
+
+            flash('A password reset link has been generated and logged to the console.', 'success')
+
+        else:
+            flash('Email not found in our records.', 'error')
+
+        # 🔁 IMPORTANT: redirect back to the form (GET request)
+        return redirect(url_for('forgot_password'))
+
+    return render_template('forgot_password.html')
+
+
+
+@app.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    try:
+        # Try to decode the token with a max age of 30 minutes
+        email = s.loads(token, salt='password-reset-salt', max_age=1800)  # 30 mins
+
+        if request.method == 'POST':
+            new_password = request.form['password']
+
+            # Update the user's password in PostgreSQL
+            try:
+                conn = psycopg2.connect(
+                    dbname="NexIQon",
+                    user="sanjay",
+                    password="",  # 🔁 Update if necessary
+                    host="localhost",
+                    port="5432"
+                )
+                cur = conn.cursor()
+                cur.execute("UPDATE users SET password = %s WHERE email = %s", (new_password, email))
+                conn.commit()
+                cur.close()
+                conn.close()
+
+                flash('Your password has been reset successfully. Please log in.', 'success')
+                return redirect(url_for('signin'))
+
+            except Exception as e:
+                flash(f"Error updating password: {e}", 'error')
+
+        return render_template('reset_password.html', token=token)
+
+    except SignatureExpired:
+        return "<h1>Reset link has expired.</h1>", 403
+    except BadSignature:
+        return "<h1>Invalid reset token.</h1>", 403
+
+
+def get_user_by_email(email):
+    try:
+        conn = psycopg2.connect(
+            dbname="NexIQon",
+            user="sanjay",
+            password="",  # 🔒 Add password if needed
+            host="localhost",
+            port="5432"
+        )
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE email = %s", (email,))
+        user = cur.fetchone()  # tuple like (id, email, password, ...)
+        cur.close()
+        conn.close()
+        return user
+    except Exception as e:
+        print(f"Database error: {e}")
+        return None
+
 
 
 
