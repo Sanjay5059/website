@@ -43,14 +43,15 @@
         <div class="bg-gray-800 p-6 rounded-lg shadow-md">
           <h3 class="text-xl font-semibold mb-2 text-white">🔐 HR Access Portal</h3>
           <p class="text-gray-300 mb-4">Manage onboarding, induction, employee records, and HR reports.</p>
-          <a href="/hr/access" class="text-blue-400 hover:text-blue-200 underline">Go to HR Portal</a>
+          <a href="{{ url_for('hr_login') }}" class="text-blue-400 underline">Go to HR Portal</a>
+
         </div>
 
         <!-- Employee Portal Box -->
         <div class="bg-gray-800 p-6 rounded-lg shadow-md">
           <h3 class="text-xl font-semibold mb-2 text-white">👥 Employee Access Portal</h3>
           <p class="text-gray-300 mb-4">Submit timesheets, leave forms, and track your activities with ease.</p>
-          <a href="/employee/access" class="text-blue-400 hover:text-blue-200 underline">Go to Employee Portal</a>
+          <a href="/employee-login" class="text-blue-400 underline">Go to Employee Portal</a>
         </div>
       </div>
     </div>

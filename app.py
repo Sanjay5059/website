@@ -137,9 +137,7 @@ def knowledge():
 def jobs():
     return render_template('jobs/index.html')
 
-@app.route('/employee-portal')
-def employee_portal():
-    return render_template('portal/employee_portal.html')
+
 
 @app.route('/reports')
 def reports():
@@ -328,6 +326,107 @@ def get_user_by_email(email):
 
 
 
+@app.route('/hr-login', methods=['GET', 'POST'])
+def hr_login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        try:
+            conn = psycopg2.connect(
+                dbname="NexIQon",
+                user="sanjay",        
+                password="",  # replace with your actual password
+                host="localhost",
+                port="5432"
+            )
+            cur = conn.cursor()
+            cur.execute("SELECT password, role FROM users WHERE email = %s", (email,))
+            result = cur.fetchone()
+            cur.close()
+            conn.close()
+
+            if result:
+                db_password, role = result
+                if password == db_password and role == 'hr':
+                    session['user'] = {'email': email, 'role': role}
+                    flash('Login successful! Welcome HR.', 'success')
+                    return redirect(url_for('hr_dashboard'))  # HR dashboard route
+                else:
+                    flash('Access denied: Not authorized as HR.', 'error')
+            else:
+                flash('Invalid credentials.', 'error')
+
+        except Exception as e:
+            flash(f'Database connection error: {e}', 'error')
+
+    return render_template('hr_login.html')
+
+
+@app.route('/hr-dashboard')
+def hr_dashboard():
+    if 'user' in session and session['user']['role'] == 'hr':
+        return 'Welcome to the HR Dashboard!'
+    else:
+        return redirect(url_for('hr_login'))
+    
+
+@app.route('/employee-login', methods=['GET', 'POST'])
+def employee_login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        try:
+            conn = psycopg2.connect(
+                dbname="NexIQon",
+                user="sanjay",
+                password="",
+                host="localhost",
+                port="5432"
+            )
+            cur = conn.cursor()
+            cur.execute("SELECT password, role FROM users WHERE email = %s", (email,))
+            result = cur.fetchone()
+            cur.close()
+            conn.close()
+        except Exception as e:
+            flash(f'Database error: {e}', 'error')
+            return render_template('employee_login.html')
+
+        if result:
+            db_password, role = result
+            if password == db_password:
+                if role == 'employee':
+                    session['user'] = {'email': email, 'role': role}
+                    flash('Login successful!', 'success')
+                    return redirect('/employee-portal')
+                else:
+                    flash('Access denied: Not an employee', 'error')
+            else:
+                flash('Invalid password', 'error')
+        else:
+            flash('Email not found', 'error')
+
+    # Only render login page if GET or after invalid POST
+    return render_template('employee_login.html')
+
+@app.route('/employee-dashboard')
+def employee_dashboard():
+    if 'user' not in session or session['user'].get('role') != 'employee':
+        flash('Unauthorized access.', 'error')
+        return redirect(url_for('employee_login'))
+
+    return render_template('employee_dashboard.html')
+
+
+@app.route('/employee-portal')
+def employee_portal():
+    if 'user' in session and session['user'].get('role') == 'employee':
+        return render_template('employee_portal.html')
+    else:
+        flash('Unauthorized access', 'error')
+        return redirect('/employee-login')
 
 
 
