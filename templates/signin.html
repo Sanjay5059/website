@@ -9,54 +9,64 @@
 <body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
 
   <div class="bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md mx-auto text-white">
-  <h2 class="text-2xl font-bold mb-6 text-center">Sign in to <span class="text-blue-400">NexIQon</span></h2>
+    <h2 class="text-2xl font-bold mb-6 text-center">Sign in to <span class="text-blue-400">NexIQon</span></h2>
 
-  <form method="POST" action="/signin">
-    <!-- Username -->
-    <label class="block mb-2 text-sm font-medium" for="username">Username or email address</label>
-    <input type="text" id="username" name="username" required
-      class="w-full px-4 py-2 mb-4 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <!-- ✅ FLASH MESSAGES BLOCK -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="mb-4 p-3 rounded text-white text-sm font-medium {{ 'bg-red-600' if category == 'error' else 'bg-green-600' }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-    <!-- Password -->
-    <label class="block mb-2 text-sm font-medium" for="password">Password</label>
-    <input type="password" id="password" name="password" required
-      class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <form method="POST" action="/signin">
+      <!-- Email -->
+      <label class="block mb-2 text-sm font-medium" for="email">Username or email address</label>
+      <input type="text" id="email" name="email" required
+        class="w-full px-4 py-2 mb-4 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
 
-    <!-- Forgot Password Below Password Field -->
-    <div class="mt-2 mb-4 text-sm text-right">
-      <a href="/forgot-password" class="text-blue-400 hover:underline">Forgot password?</a>
+      <!-- Password -->
+      <label class="block mb-2 text-sm font-medium" for="password">Password</label>
+      <input type="password" id="password" name="password" required
+        class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+      <!-- Forgot Password -->
+      <div class="mt-2 mb-4 text-sm text-right">
+        <a href="/forgot-password" class="text-blue-400 hover:underline">Forgot password?</a>
+      </div>
+
+      <!-- Sign In Button -->
+      <button type="submit"
+        class="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-2 rounded transition duration-300">
+        Sign in
+      </button>
+    </form>
+
+    <!-- Divider -->
+    <div class="flex items-center my-6">
+      <div class="flex-grow border-t border-gray-600"></div>
+      <span class="mx-4 text-gray-400">OR</span>
+      <div class="flex-grow border-t border-gray-600"></div>
     </div>
 
-    <!-- Sign In Button in Dark Green -->
-    <button type="submit"
-      class="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-2 rounded transition duration-300">
-      Sign in
-    </button>
-  </form>
+    <!-- OAuth Buttons -->
+    <a href="{{ url_for('login', provider='google') }}"
+      class="w-full bg-white text-black py-2 px-4 rounded flex items-center justify-center hover:bg-gray-200 mb-3">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"
+        class="w-5 h-5 mr-2" />
+      Continue with Google
+    </a>
 
-  <!-- OR divider -->
-  <div class="flex items-center my-6">
-    <div class="flex-grow border-t border-gray-600"></div>
-    <span class="mx-4 text-gray-400">OR</span>
-    <div class="flex-grow border-t border-gray-600"></div>
+    <a href="{{ url_for('login', provider='microsoft') }}"
+      class="w-full bg-white text-black py-2 px-4 rounded flex items-center justify-center hover:bg-gray-200">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft"
+        class="w-5 h-5 mr-2" />
+      Continue with Microsoft Account
+    </a>
   </div>
-
-  <!-- OAuth buttons -->
-  <a href="{{ url_for('login', provider='google') }}"
-    class="w-full bg-white text-black py-2 px-4 rounded flex items-center justify-center hover:bg-gray-200 mb-3">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"
-     class="w-5 h-5 mr-2" />
-    Continue with Google
-  </a>
-
-  <a href="{{ url_for('login', provider='microsoft') }}"
-    class="w-full bg-white text-black py-2 px-4 rounded flex items-center justify-center hover:bg-gray-200">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft"
-      class="w-5 h-5 mr-2" />
-    Continue with Microsoft Account
-  </a>
-</div>
-
 
 </body>
 </html>

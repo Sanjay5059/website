@@ -1,7 +1,11 @@
-from flask import Flask, request, Response, stream_with_context, render_template, redirect, url_for, session
+from flask import Flask, request, Response, stream_with_context, render_template, redirect, url_for, session, flash
 import requests, json
+import psycopg2
 from flask_cors import CORS
+from werkzeug.security import check_password_hash
 from authlib.integrations.flask_client import OAuth
+from urllib.parse import urlencode
+
 
 app = Flask(__name__)
 app.secret_key = '2169ae279691918b3b5c54641f2efb9e17de8ac4e4722e376ea6475085828918'
@@ -9,18 +13,19 @@ CORS(app)
 
 # 🔐 OAuth Setup
 oauth = OAuth(app)
+ 
 
 # Google OAuth
 oauth.register(
     name='google',
-    client_id='YOUR_GOOGLE_CLIENT_ID',
-    client_secret='YOUR_GOOGLE_CLIENT_SECRET',
-    access_token_url='https://oauth2.googleapis.com/token',
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-    authorize_params={'access_type': 'offline', 'prompt': 'consent'},
-    api_base_url='https://www.googleapis.com/oauth2/v1/',
-    client_kwargs={'scope': 'openid email profile'},
+    client_id='1015957394002-k2nebl44o2p82ige6dgpc125gepc7ntn.apps.googleusercontent.com',
+    client_secret='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',
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={
+        'scope': 'openid email profile'
+    }
 )
+
 
 # Microsoft OAuth
 oauth.register(
@@ -39,24 +44,45 @@ def login(provider):
     redirect_uri = url_for('authorize', provider=provider, _external=True)
     return oauth.create_client(provider).authorize_redirect(redirect_uri)
 
+
 @app.route('/authorize/<provider>')
 def authorize(provider):
     client = oauth.create_client(provider)
     token = client.authorize_access_token()
-    user_info = client.parse_id_token(token)
+    user_info = client.userinfo()
+
+
     email = user_info.get('email')
-    domain = email.split('@')[-1]
 
-    if domain != 'yourcompany.com':  # ✅ Replace this with your domain
-        return "Unauthorized", 403
+    # ✅ Check if Gmail exists in `gmail_users` table
+    try:
+        conn = psycopg2.connect(
+            dbname="NexIQon",
+            user="sanjay",
+            password="",
+            host="localhost",
+            port="5432"
+        )
+        cur = conn.cursor()
+        cur.execute("SELECT gmail FROM gmail_users WHERE gmail = %s", (email,))
+        result = cur.fetchone()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        flash(f"Database error: {e}", "error")
+        return redirect(url_for('signin'))
 
+    if not result:
+        flash("Access denied: your Gmail is not authorized", "error")
+        return redirect(url_for('signin'))
+
+    # ✅ Success: login
     session['user'] = {
-        'email': email,
-        'name': user_info.get('name'),
-        'role': 'employee'
+        'email': email
     }
-    session['user_role'] = 'employee'
-    return redirect(url_for('home'))
+    session['user_role'] = 'employee'  # Optional
+    return redirect(url_for('access_page'))
+
 
 @app.route('/logout')
 def logout():
@@ -116,10 +142,6 @@ def employee_portal():
 def reports():
     return render_template('reports/index.html')
 
-@app.route('/signin', methods=['GET'])
-def signin():
-    return render_template('signin.html')
-
 @app.route('/readmore')
 def read_more():
     return render_template('readmore.html')
@@ -155,6 +177,69 @@ def contact_submit():
 
     # Store or send the message here
     return redirect(url_for('home'))  # or show a success page
+
+
+@app.route('/signin', methods=['GET', 'POST'])
+def signin():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        try:
+            conn = psycopg2.connect(
+                dbname="NexIQon",
+                user="sanjay",        # 🔁 Replace with your actual PostgreSQL username
+                password="",# 🔁 Replace with your actual PostgreSQL password
+                host="localhost",
+                port="5432"
+            )
+            cur = conn.cursor()
+            cur.execute("SELECT password FROM users WHERE email = %s", (email,))
+            result = cur.fetchone()
+            cur.close()
+            conn.close()
+        except Exception as e:
+            flash(f'Database connection error: {e}', 'error')
+            return render_template('signin.html')
+
+        if result:
+            db_password = result[0]
+            if db_password == password:  # You can add hashing later
+                session['user'] = {'email': email}
+                flash('Login successful!', 'success')
+                return redirect(url_for('access_page'))  # Or another welcome page
+            else:
+                flash('Invalid password', 'error')
+        else:
+            flash('Email not found or not a member', 'error')
+
+    return render_template('signin.html')
+
+
+@app.route('/dashboard')
+def dashboard():
+    if 'user' not in session:
+        return redirect(url_for('signin'))
+    return f"<h1>Hello, {session['user']['name']} 👋 Welcome to the NexIQon Portal</h1>"
+
+@app.route('/access')
+def access_page():
+    if 'user' not in session:
+        flash("Please sign in first", "error")
+        return redirect(url_for('signin'))
+    return render_template('access.html')
+
+from functools import wraps  # Helps preserve function info
+
+def login_required(f):  # This wraps your route function like leave_form()
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user' not in session:  # 🔐 Check: Is user logged in?
+            flash("You need to sign in to access this page.", "error")
+            return redirect(url_for('signin'))  # 🚪 Redirect to login
+        return f(*args, **kwargs)  # ✅ Else continue to the real route
+    return decorated_function
+
 
 
 
