@@ -32,6 +32,8 @@
   <div class="max-w-lg mx-auto bg-gray-800 p-6 rounded shadow-md">
     <h2 class="text-2xl font-bold text-blue-400 mb-4">Submit Leave Request</h2>
 
+    
+
     <form method="POST">
       <label for="leave_days" class="block mb-1">Number of Leave Days:</label>
       <input type="number" id="leave_days" name="leave_days" min="1" max="10" required onchange="showDateFields()" class="w-full rounded p-2 bg-gray-700 text-white mb-4">
@@ -51,16 +53,16 @@
       <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded">Submit Request</button>
     </form>
 
-    <!-- 📋 Leave Status + Back Links BELOW FORM -->
+    <!-- 📋 Leave Status + Back Links -->
     <div class="mt-6 text-center text-sm text-blue-400 space-y-2">
-      <a href="{{ url_for('leave_status') }}" class="hover:underline font-bold block">
+      <a href="{{ url_for('hr_leave_requests') }}">Check Your Leave Status</a>
+
         📋 Check Your Leave Status
       </a>
       <a href="{{ url_for('employee_portal') }}" class="hover:underline block">
         ← Back to Portal
       </a>
     </div>
-
   </div>
 </body>
 </html>

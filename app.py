@@ -6,6 +6,8 @@ from werkzeug.security import check_password_hash
 from authlib.integrations.flask_client import OAuth
 from urllib.parse import urlencode
 from itsdangerous import URLSafeTimedSerializer
+from datetime import datetime
+
 
 
 app = Flask(__name__)
@@ -490,69 +492,56 @@ def hr_leave_requests():
 
 @app.route('/submit-leave', methods=['GET', 'POST'])
 def submit_leave_request():
-    if 'user' not in session:
-        return redirect(url_for('signin'))
-
     if request.method == 'POST':
-        try:
-            email = session['user']['email']
-            leave_type = request.form['leave_type']
-            reason = request.form['reason']
-            num_days = int(request.form['leave_days'])
+        email = session['user']['email']
+        leave_days = int(request.form['leave_days'])
+        leave_type = request.form['leave_type']
+        reason = request.form['reason']
 
-            conn = psycopg2.connect(
-                dbname="NexIQon",
-                user="sanjay",
-                password="",
-                host="localhost",
-                port="5432"
-            )
-            cur = conn.cursor()
+        today = datetime.today()
 
-            for i in range(num_days):
-                leave_date = request.form[f'leave_date_{i}']
-                cur.execute("""
-                    INSERT INTO leave_requests (employee_email, leave_date, leave_days, leave_type, reason, status)
-                    VALUES (%s, %s, %s, %s, %s, %s)
-                """, (email, leave_date, 1, leave_type, reason, 'Pending'))
+        conn = psycopg2.connect(
+            dbname="NexIQon",
+            user="sanjay",
+            password="",  # Secure this in production
+            host="localhost",
+            port="5432"
+        )
+        cursor = conn.cursor()
 
-            conn.commit()
-            cur.close()
-            conn.close()
-            return redirect(url_for('leave_status'))
+        # Count leave requests for this email for this month
+        cursor.execute("""
+            SELECT COUNT(*) FROM leave_requests
+            WHERE employee_email = %s
+            AND date_trunc('month', leave_date) = date_trunc('month', CURRENT_DATE)
+        """, (email,))
+        monthly_leave_count = cursor.fetchone()[0]
 
-        except Exception as e:
-            return f"Error: {e}"
+        # Check if over monthly limit
+        if monthly_leave_count + leave_days > 5:
+            flash("❌ You’ve exhausted your 5 leaves this month. Please contact HR.", "error")
+            return redirect('/submit-leave')
+
+        # Insert leave entries
+        for i in range(leave_days):
+            date_field = f"leave_date_{i}"
+            leave_date = request.form.get(date_field)
+            cursor.execute("""
+                INSERT INTO leave_requests (
+                    employee_email, leave_date, leave_days, leave_type, reason, status, submitted_at
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (
+                email, leave_date, 1, leave_type, reason, 'Pending', datetime.now()
+            ))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+        flash("✅ Leave request submitted successfully!", "success")
+        return redirect('/submit-leave')
 
     return render_template('submit_leave.html')
-
-@app.route('/leave-status')
-def leave_status():
-    if 'user' not in session:
-        return redirect(url_for('signin'))
-
-    email = session['user']['email']
-
-    conn = psycopg2.connect(
-        dbname="NexIQon",
-        user="sanjay",
-        password="",
-        host="localhost",
-        port="5432"
-    )
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT leave_date, leave_days, leave_type, reason, status 
-        FROM leave_requests 
-        WHERE employee_email = %s
-        ORDER BY submitted_at DESC
-    """, (email,))
-    leaves = cur.fetchall()
-    cur.close()
-    conn.close()
-
-    return render_template("leave_status.html", leaves=leaves)
-
 
 
 @app.route('/hr-announcements', methods=['GET', 'POST'])
