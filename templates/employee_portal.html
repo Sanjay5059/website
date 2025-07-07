@@ -6,11 +6,11 @@
 </head>
 <body class="bg-gray-900 text-white min-h-screen">
 
-    <!-- Top Bar -->
-    <div class="flex justify-between items-center bg-gray-800 px-6 py-4">
-        <h1 class="text-xl font-bold text-blue-400">NexIQon Employee Portal</h1>
-        <a href="/logout" onclick="return confirmLogout()" class="text-red-400 hover:text-red-300">Logout</a>
-    </div>
+   <!-- Top Bar -->
+<div class="flex justify-between items-center bg-white px-6 py-4 border-b-2 border-gray-300">
+    <h1 class="text-xl font-bold text-blue-600">NexIQon</h1>
+    <a href="/logout" onclick="return confirm('Are you sure you want to logout?')" class="text-red-500 hover:text-red-400 font-semibold">Logout</a>
+</div>
 
     <!-- Welcome Text -->
     <div class="text-center my-8">
@@ -31,16 +31,17 @@
             <span>Submit Feedback</span>
         </a>
 
-        <a href="#" class="bg-gray-800 hover:bg-gray-700 transition p-6 rounded-lg shadow text-white text-lg flex items-center space-x-2">
+         <a href="#" class="bg-gray-800 hover:bg-gray-700 transition p-6 rounded-lg shadow text-white text-lg flex items-center space-x-2">
             <span>🕒</span>
             <span>Timesheet</span>
         </a>
 
-        <a href="#" class="bg-gray-800 hover:bg-gray-700 transition p-6 rounded-lg shadow text-white text-lg flex items-center space-x-2">
+        <a href="{{ url_for('submit_leave_request') }}" class="bg-gray-800 hover:bg-gray-700 transition p-6 rounded-lg shadow text-white text-lg flex items-center space-x-2">
             <span>🏖️</span>
             <span>Leave Requests</span>
         </a>
-        
+
+
     </div>
 
     <!-- Logout confirmation script -->
@@ -49,6 +50,8 @@
             return confirm("Are you sure you want to logout?");
         }
     </script>
+
+    
 
 </body>
 </html>

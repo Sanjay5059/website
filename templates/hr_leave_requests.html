@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leave Requests</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background-color: #0e1628;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        table {
+            width: 90%;
+            margin: 40px auto;
+            border-collapse: collapse;
+            background-color: #1f2a44;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 16px;
+            text-align: center;
+            border-bottom: 1px solid #2c3e50;
+        }
+        th {
+            background-color: #1b253b;
+            color: #93b5ff;
+            font-size: 18px;
+        }
+        tr:hover {
+            background-color: #2a3d66;
+        }
+        .status-approved {
+            color: #00ff88;
+            font-weight: bold;
+        }
+        .status-rejected {
+            color: #ff4c4c;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: #f0ad4e;
+            font-weight: bold;
+        }
+        .action-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 20px;
+            margin: 0 5px;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin: 30px auto;
+            font-size: 16px;
+            color: #5ca8ff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h2 style="text-align: center; color: #93b5ff;"><span>🗓️</span> Leave Requests</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Date</th>
+                <th>Days</th>
+                <th>Type</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in requests %}
+            <tr>
+                <td>{{ req[1] }}</td>
+                <td>{{ req[2] }}</td>
+                <td>{{ req[3] }}</td>
+                <td>{{ req[4] }}</td>
+                <td>{{ req[5] }}</td>
+                <td>
+                    {% if req[6] == 'Approved' %}
+                        <span class="status-approved">Approved</span>
+                    {% elif req[6] == 'Rejected' %}
+                        <span class="status-rejected">Rejected</span>
+                    {% else %}
+                        <span class="status-pending">Pending</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if req[6] == 'Pending' %}
+                    <form method="POST" style="display:inline;">
+                        <input type="hidden" name="req_id" value="{{ req[0] }}">
+                        <input type="hidden" name="action" value="Approved">
+                        <button type="submit" class="action-btn" title="Approve">✅</button>
+                    </form>
+                    <form method="POST" style="display:inline;">
+                        <input type="hidden" name="req_id" value="{{ req[0] }}">
+                        <input type="hidden" name="action" value="Rejected">
+                        <button type="submit" class="action-btn" title="Reject">❌</button>
+                    </form>
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="back-link" href="{{ url_for('hr_portal') }}">← Back to HR Dashboard</a>
+
+</body>
+</html>

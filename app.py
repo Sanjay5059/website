@@ -447,23 +447,111 @@ def request_leave():
 
     return render_template("employee_leave_form.html")
 
+
+
 @app.route('/hr/leave-requests', methods=['GET', 'POST'])
 def hr_leave_requests():
-    conn = psycopg2.connect(...)
-    cur = conn.cursor()
+    # ✅ Check if user email is in session and belongs to HR
+    if 'user' not in session:
+        return redirect(url_for('signin'))
 
+    email = session['user'].get('email')
+
+    # Connect to DB and check if this email is an HR user
+    conn = psycopg2.connect(
+        dbname="NexIQon",
+        user="sanjay",
+        password="",  # Use real password
+        host="localhost",
+        port="5432"
+    )
+    cur = conn.cursor()
+    cur.execute("SELECT role FROM users WHERE email = %s", (email,))
+    result = cur.fetchone()
+
+    if not result or result[0] != 'hr':
+        flash('Access denied: HR only', 'error')
+        return redirect(url_for('signin'))
+
+    # ✅ Handle POST (approve/reject leave)
     if request.method == 'POST':
         req_id = request.form['req_id']
         action = request.form['action']
         cur.execute("UPDATE leave_requests SET status = %s WHERE id = %s", (action, req_id))
         conn.commit()
 
+    # ✅ Fetch all leave requests
     cur.execute("SELECT * FROM leave_requests ORDER BY submitted_at DESC")
     requests = cur.fetchall()
     cur.close()
     conn.close()
 
     return render_template("hr_leave_requests.html", requests=requests)
+
+@app.route('/submit-leave', methods=['GET', 'POST'])
+def submit_leave_request():
+    if 'user' not in session:
+        return redirect(url_for('signin'))
+
+    if request.method == 'POST':
+        try:
+            email = session['user']['email']
+            leave_type = request.form['leave_type']
+            reason = request.form['reason']
+            num_days = int(request.form['leave_days'])
+
+            conn = psycopg2.connect(
+                dbname="NexIQon",
+                user="sanjay",
+                password="",
+                host="localhost",
+                port="5432"
+            )
+            cur = conn.cursor()
+
+            for i in range(num_days):
+                leave_date = request.form[f'leave_date_{i}']
+                cur.execute("""
+                    INSERT INTO leave_requests (employee_email, leave_date, leave_days, leave_type, reason, status)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (email, leave_date, 1, leave_type, reason, 'Pending'))
+
+            conn.commit()
+            cur.close()
+            conn.close()
+            return redirect(url_for('leave_status'))
+
+        except Exception as e:
+            return f"Error: {e}"
+
+    return render_template('submit_leave.html')
+
+@app.route('/leave-status')
+def leave_status():
+    if 'user' not in session:
+        return redirect(url_for('signin'))
+
+    email = session['user']['email']
+
+    conn = psycopg2.connect(
+        dbname="NexIQon",
+        user="sanjay",
+        password="",
+        host="localhost",
+        port="5432"
+    )
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT leave_date, leave_days, leave_type, reason, status 
+        FROM leave_requests 
+        WHERE employee_email = %s
+        ORDER BY submitted_at DESC
+    """, (email,))
+    leaves = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return render_template("leave_status.html", leaves=leaves)
 
 
 
